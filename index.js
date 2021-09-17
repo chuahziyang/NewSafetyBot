@@ -14,10 +14,7 @@ const app = express();
 // });
 // bot.launch();
 
-process.once("SIGINT", () => bot.stop("SIGINT"));
-process.once("SIGTERM", () => bot.stop("SIGTERM"));
-
-app.get("/", async (req, res) => {
+async function main() {
   const auth = new google.auth.GoogleAuth({
     keyFile: "secrets.json",
     scopes: "https://www.googleapis.com/auth/spreadsheets",
@@ -43,8 +40,6 @@ app.get("/", async (req, res) => {
     ...getRows.data.values.map(([key, val]) => ({ [key]: val }))
   );
 
-  res.send(getRows);
-
   const bot = new Telegraf(process.env.TOKEN);
   bot.on("text", (ctx) => {
     ctx.reply(getRows[ctx.message.text]);
@@ -53,8 +48,6 @@ app.get("/", async (req, res) => {
 
   process.once("SIGINT", () => bot.stop("SIGINT"));
   process.once("SIGTERM", () => bot.stop("SIGTERM"));
+}
 
-  getResponse = () => {};
-});
-
-app.listen(1337, (req, res) => console.log("Running on 1337"));
+main();
