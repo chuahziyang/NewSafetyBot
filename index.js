@@ -17,6 +17,10 @@ const app = express();
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));
 
+var fs = require("fs");
+
+fs.writeFile("./secrets.json", process.env.SECRET, (err) => {});
+
 app.get("/", async (req, res) => {
   const auth = new google.auth.GoogleAuth({
     keyFile: "secrets.json",
